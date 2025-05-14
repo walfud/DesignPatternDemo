@@ -14,7 +14,9 @@ class MainActivity : ComponentActivity() {
         setContentView(R.layout.activity_main)
         val tv = findViewById<TextView>(R.id.tv)
 
-        val controller = MvpPassivePresenter()
+        val model = MvcModel()
+        val view = MvcView(tv)
+        val controller = MvcController(view, model)
         controller.initialize(tv)
     }
 }

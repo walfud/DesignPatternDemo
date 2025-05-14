@@ -9,14 +9,12 @@ import kotlin.random.Random
  *  1. 连接 View 和 Model.
  *  2. 注册外部事件后调用 Model 触发逻辑.
  */
-class MvcController {
-    private lateinit var model: MvcModel
-    private lateinit var view: MvcView
-
+class MvcController(
+    private val view: MvcView,
+    private val model: MvcModel,
+) {
     fun initialize(tv: TextView) {
         // 连接 model 和 view
-        model = MvcModel()
-        view = MvcView(tv)
         view.setupModel(model)
 
         // 设置外部事件并调用 model 响应

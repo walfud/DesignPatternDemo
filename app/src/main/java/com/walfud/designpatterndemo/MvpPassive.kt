@@ -10,15 +10,11 @@ import kotlin.random.Random
  *  2. 注册外部事件后调用 Model 触发逻辑.
  *  3. 承担 model 和 view 之间复杂的逻辑调度(如 `handleXxx` 中).
  */
-class MvpPassivePresenter {
-    private lateinit var model: MvpPassiveModel
-    private lateinit var view: MvpPassiveView
-
+class MvpPassivePresenter(
+    private val view: MvpPassiveView,
+    private val model: MvpPassiveModel,
+) {
     fun initialize(tv: TextView) {
-        // 连接 model 和 view
-        model = MvpPassiveModel()
-        view = MvpPassiveView(tv)
-
         // 设置外部事件并调用 model 响应
         view.setTvClickListener {
             handleXxx()
