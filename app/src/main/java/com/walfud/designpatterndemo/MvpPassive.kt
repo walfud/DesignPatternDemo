@@ -5,26 +5,22 @@ import android.widget.TextView
 import kotlin.random.Random
 
 /**
- * 为了解耦 modal 和 view:
- *  1. 连接 View 和 Model.
- *  2. 注册外部事件后调用 Model 触发逻辑.
- *  3. 承担 model 和 view 之间复杂的逻辑调度(如 `handleXxx` 中).
+ * 彻底解耦 modal 和 view:
+ *  1. 承担 model 和 view 之间复杂的逻辑调度(如 `handleXxx` 中).
+ *  2. 承担 UI 逻辑(如 `toDescString` 中).
  */
 class MvpPassivePresenter(
-    private val view: MvpPassiveView,
     private val model: MvpPassiveModel,
 ) {
-    fun initialize(tv: TextView) {
-        // 设置外部事件并调用 model 响应
-        view.setTvClickListener {
-            handleXxx()
-        }
+    private lateinit var view: MvpPassiveView
+    fun attachView(view: MvpPassiveView) {
+        this.view = view
     }
 
     /**
      * 在 Presenter 中调用了 model 执行业务逻辑, 并在自身进行 ui 拼装, 最终调度给 view 层.
      */
-    private fun handleXxx() {
+    fun handleXxx() {
         val num = model.genRandomNum()
         val descStr = toDescString(num)
         view.updateResult(descStr)
@@ -53,13 +49,18 @@ class MvpPassiveModel {
 
 /**
  * 特点:
- *  纯视图(真哑视图), 仅进行 ui 展示.
+ *  1. 责进行 ui 展示.
+ *  2. 负责将 ui 事件转发给 Presenter.
  */
 class MvpPassiveView(
     val tv: TextView,
+    private val presenter: MvpPassivePresenter,
 ) {
-    fun setTvClickListener(listener: View.OnClickListener) {
-        tv.setOnClickListener(listener)
+    init {
+
+        tv.setOnClickListener {
+            presenter.handleXxx()
+        }
     }
 
     /******* UI 展示 *******/
